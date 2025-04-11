@@ -200,3 +200,37 @@ resource "vault_token" "boundary-credentials-store-token" {
   ]
 
 }
+
+
+
+resource "vault_mount" "database" {
+  path = "database"
+  type = "database"
+}
+
+resource "vault_database_secret_backend_connection" "mysql" {
+  name     = "mysql"
+  backend  = vault_mount.database.path
+  allowed_roles = ["my-role"]
+
+  mysql {
+    username = "vaultuser"
+    password = "vaultpass"
+    connection_url = "{{username}}:{{password}}@tcp(mysql.example.com:3306)/"
+  }
+}
+
+resource "vault_database_secret_backend_role" "mysql_role" {
+  name     = "my-role"
+  backend  = vault_mount.database.path
+  db_name  = vault_database_secret_backend_connection.mysql.name
+
+  creation_statements = [
+    "CREATE USER '{{name}}'@'%' IDENTIFIED BY '{{password}}';",
+    "GRANT SELECT, INSERT, UPDATE, DELETE ON mydb.* TO '{{name}}'@'%';"
+  ]
+
+  default_ttl = "1h"
+  max_ttl     = "24h"
+}
+
