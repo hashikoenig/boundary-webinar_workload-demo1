@@ -214,7 +214,7 @@ resource "vault_database_secret_backend_connection" "mysql" {
   allowed_roles = ["my-role"]
 
   mysql {
-    username = "vaultuser"
+    username = "mysql"
     password = "vaultpass"
     connection_url = "{{username}}:{{password}}@tcp(mysql.example.com:3306)/"
   }
@@ -230,7 +230,7 @@ resource "vault_database_secret_backend_role" "mysql_role" {
     "GRANT SELECT, INSERT, UPDATE, DELETE ON mydb.* TO '{{name}}'@'%';"
   ]
 
-  default_ttl = "1h"
-  max_ttl     = "24h"
+  default_ttl = 3600
+  max_ttl     = 70000
 }
 
