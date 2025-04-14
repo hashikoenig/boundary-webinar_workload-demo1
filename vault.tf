@@ -202,7 +202,7 @@ resource "vault_token" "boundary-credentials-store-token" {
 }
 
 
-
+/*
 resource "vault_mount" "database" {
   path = "database"
   type = "database"
@@ -233,4 +233,6 @@ resource "vault_database_secret_backend_role" "mysql_role" {
   default_ttl = 3600
   max_ttl     = 70000
 }
+
+*/
 
